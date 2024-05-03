@@ -39,9 +39,7 @@ async def main() -> None:
                 with tracer.start_as_current_span(
                     "consume-service-1", context=trace.set_span_in_context(msg.span)
                 ):
-                    await producer.send(
-                        os.environ["TOPIC_2"], msg.value * 2, headers=list(msg.headers)
-                    )
+                    await producer.send(os.environ["TOPIC_2"], msg.value * 2)
 
 
 if __name__ == "__main__":
