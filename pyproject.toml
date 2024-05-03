@@ -5,7 +5,13 @@ description = "Add your description here"
 authors = [
     { name = "didimelli", email = "davide.melli@dorbit.space" }
 ]
-dependencies = []
+dependencies = [
+    "aiokafka>=0.10.0",
+    "opentelemetry-api>=1.24.0",
+    "opentelemetry-distro>=0.45b0",
+    "opentelemetry-sdk>=1.24.0",
+    "anyio>=4.3.0",
+]
 readme = "README.md"
 requires-python = ">= 3.8"
 
