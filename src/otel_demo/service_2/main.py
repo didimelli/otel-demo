@@ -2,6 +2,23 @@ import os
 
 import anyio
 from aiokafka import AIOKafkaConsumer
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
+from otel_demo.aiokafka_instrumentation import KafkaInstrumentor
+
+resource = Resource(attributes={SERVICE_NAME: "service-2"})
+provider = TracerProvider(resource=resource)
+processor = BatchSpanProcessor(
+    OTLPSpanExporter(endpoint="http://127.0.0.1:4318/v1/traces")
+)
+provider.add_span_processor(processor)
+trace.set_tracer_provider(provider)
+tracer = trace.get_tracer("my.tracer.name")
+KafkaInstrumentor().instrument()
 
 
 async def main() -> None:
@@ -13,7 +30,10 @@ async def main() -> None:
     )
     async with consumer as consumer:
         async for msg in consumer:
-            print(msg.value)
+            with tracer.start_as_current_span(
+                "consume-service-2", context=trace.set_span_in_context(msg.span)
+            ):
+                print(msg.value)
 
 
 if __name__ == "__main__":
