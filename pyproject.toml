@@ -11,6 +11,7 @@ dependencies = [
     "opentelemetry-distro>=0.45b0",
     "opentelemetry-sdk>=1.24.0",
     "anyio>=4.3.0",
+    "asyncclick>=8.1.7.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

@@ -11,9 +11,12 @@
 aiokafka==0.10.0
     # via otel-demo
 anyio==4.3.0
+    # via asyncclick
     # via otel-demo
 async-timeout==4.0.3
     # via aiokafka
+asyncclick==8.1.7.2
+    # via otel-demo
 cfgv==3.4.0
     # via pre-commit
 deprecated==1.2.14
