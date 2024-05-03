@@ -3,7 +3,7 @@ name = "otel-demo"
 version = "0.1.0"
 description = "Add your description here"
 authors = [
-    { name = "didimelli", email = "davide.melli@dorbit.space" }
+    { name = "didimelli", email = "davidemelli@duck.com" }
 ]
 dependencies = [
     "aiokafka>=0.10.0",
