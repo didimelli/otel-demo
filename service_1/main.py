@@ -8,7 +8,7 @@ from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
-from otel_demo.aiokafka_instrumentation import KafkaInstrumentor
+from aiokafka_instrumentation import KafkaInstrumentor
 
 resource = Resource(attributes={SERVICE_NAME: "service-1"})
 provider = TracerProvider(resource=resource)

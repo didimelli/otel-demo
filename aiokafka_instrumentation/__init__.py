@@ -76,9 +76,9 @@ from opentelemetry.instrumentation.instrumentor import BaseInstrumentor
 from opentelemetry.instrumentation.utils import unwrap
 from wrapt import wrap_function_wrapper
 
-from otel_demo.aiokafka_instrumentation.package import _instruments
-from otel_demo.aiokafka_instrumentation.utils import _wrap_anext, _wrap_send
-from otel_demo.aiokafka_instrumentation.version import __version__
+from aiokafka_instrumentation.package import _instruments
+from aiokafka_instrumentation.utils import _wrap_anext, _wrap_send
+from aiokafka_instrumentation.version import __version__
 
 
 class KafkaInstrumentor(BaseInstrumentor):

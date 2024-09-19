@@ -1,16 +1,16 @@
 import os
 
-import asyncclick as click
-from aiokafka import AIOKafkaProducer
+import anyio
+from aiokafka import AIOKafkaConsumer
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
-from otel_demo.aiokafka_instrumentation import KafkaInstrumentor
+from aiokafka_instrumentation import KafkaInstrumentor
 
-resource = Resource(attributes={SERVICE_NAME: "cli"})
+resource = Resource(attributes={SERVICE_NAME: "service-2"})
 provider = TracerProvider(resource=resource)
 processor = BatchSpanProcessor(
     OTLPSpanExporter(endpoint="http://127.0.0.1:4318/v1/traces")
@@ -21,18 +21,20 @@ tracer = trace.get_tracer("my.tracer.name")
 KafkaInstrumentor().instrument()
 
 
-@click.command()
-@click.option("--message", help="Message to publish.", required=True)
-@tracer.start_as_current_span("publish_topic_1")
-async def publish_topic_1(message: str) -> None:
-    producer = AIOKafkaProducer(
+async def main() -> None:
+    consumer = AIOKafkaConsumer(
+        os.environ["TOPIC_2"],
         bootstrap_servers=[
             f"{os.environ['KAFKA_HOST']:{os.environ['KAFKA_PORT']}}",
-        ]
+        ],
     )
-    async with producer as producer:
-        await producer.send(os.environ["TOPIC_1"], message.encode())
+    async with consumer as consumer:
+        async for msg in consumer:
+            with tracer.start_as_current_span(
+                "consume-service-2", context=trace.set_span_in_context(msg.span)
+            ):
+                print(msg.value)
 
 
 if __name__ == "__main__":
-    publish_topic_1()
+    anyio.run(main)
